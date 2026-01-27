@@ -1,0 +1,25 @@
+services:
+  school.api:
+    image: ${DOCKER_REGISTRY-}schoolapi
+    build:
+      context: .
+      dockerfile: src/School.Api/Dockerfile
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+
+volumes:
+  sqlvolume:    
