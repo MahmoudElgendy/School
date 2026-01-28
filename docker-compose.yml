@@ -4,6 +4,13 @@ services:
     build:
       context: .
       dockerfile: src/School.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=DemoDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+    depends_on:
+      - db
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
@@ -14,12 +21,6 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - sqlvolume:/var/opt/mssql
-  redis:
-    image: "redis:alpine"
-    container_name: redis
-    ports:
-      - "6379:6379"
-
 
 volumes:
-  sqlvolume:    
+  sqlvolume:
