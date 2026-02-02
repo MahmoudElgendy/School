@@ -8,19 +8,3 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=DemoDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
-    depends_on:
-      - db
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
-    ports:
-      - "1433:1433"
-    environment:
-      SA_PASSWORD: "YourStrong!Passw0rd"
-      ACCEPT_EULA: "Y"
-    volumes:
-      - sqlvolume:/var/opt/mssql
-
-volumes:
-  sqlvolume:

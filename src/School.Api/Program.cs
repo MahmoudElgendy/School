@@ -28,3 +28,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+    await StudentSeeder.SeedAsync(db);
+}
+
