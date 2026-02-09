@@ -1,0 +1,45 @@
+name: Build and Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ACR_NAME: schoolacr2026
+  IMAGE_NAME: schoolapi
+  WEB_APP_NAME: school-api-prod
+  RESOURCE_GROUP: school-rg
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Login to ACR
+      run: az acr login --name $ACR_NAME
+
+    - name: Build Docker image
+      run: |
+        docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
+        docker tag $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
+                   $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+
+    - name: Push image
+      run: |
+        docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
+        docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:latest
+
+    - name: Restart Web App
+      run: |
+        az webapp restart \
+          --name $WEB_APP_NAME \
+          --resource-group $RESOURCE_GROUP
