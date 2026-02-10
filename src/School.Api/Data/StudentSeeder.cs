@@ -45,14 +45,14 @@ namespace School.Api.Data
                 Email = "Israa@test.com",
                 DateOfBirth = new DateTime(1993, 3, 10)
             },
-            //new Student
-            //{
-            //    Id = Guid.NewGuid(),
-            //    FirstName = "aa",
-            //    LastName = "ddd",
-            //    Email = "Israa@test.com",
-            //    DateOfBirth = new DateTime(1993, 3, 10)
-            //}
+            new Student
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "aa",
+                LastName = "ddd",
+                Email = "Israa@test.com",
+                DateOfBirth = new DateTime(1993, 3, 10)
+            }
         };
 
             context.Students.AddRange(students);
