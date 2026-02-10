@@ -6,12 +6,12 @@ using School.Api.Models;
 using System;
 
 [ApiController]
-[Route("api/students")]
-public class CarsController : ControllerBase
+[Route("api/employees")]
+public class EmployeesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
 
-    public CarsController(ApplicationDbContext context)
+    public EmployeesController(ApplicationDbContext context)
     {
         _context = context;
     }
