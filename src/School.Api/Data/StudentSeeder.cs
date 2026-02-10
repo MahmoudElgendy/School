@@ -20,14 +20,14 @@ namespace School.Api.Data
                 Email = "john.doe@test.com",
                 DateOfBirth = new DateTime(1998, 5, 12)
             },
-            new Student
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Jane",
-                LastName = "Smith",
-                Email = "jane.smith@test.com",
-                DateOfBirth = new DateTime(2000, 1, 25)
-            },
+            //new Student
+            //{
+            //    Id = Guid.NewGuid(),
+            //    FirstName = "Jane",
+            //    LastName = "Smith",
+            //    Email = "jane.smith@test.com",
+            //    DateOfBirth = new DateTime(2000, 1, 25)
+            //},
             new Student
             {
                 Id = Guid.NewGuid(),
