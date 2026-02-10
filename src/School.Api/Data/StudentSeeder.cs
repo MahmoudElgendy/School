@@ -44,6 +44,14 @@ namespace School.Api.Data
                 LastName = "Maher",
                 Email = "Israa@test.com",
                 DateOfBirth = new DateTime(1993, 3, 10)
+            },
+            new Student
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "aa",
+                LastName = "ddd",
+                Email = "Israa@test.com",
+                DateOfBirth = new DateTime(1993, 3, 10)
             }
         };
 
