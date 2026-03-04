@@ -1,4 +1,6 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using School.Api.Data;
 using System;
 
@@ -7,11 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+if (builder.Environment.IsProduction())
+{
+    var vaultUri = new Uri(builder.Configuration["Vault:Uri"]);
+    if (vaultUri != null)
+    {
+        builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
+    }
+
+}
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers();
 
 
 var app = builder.Build();
