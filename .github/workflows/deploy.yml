@@ -1,46 +1,52 @@
-name: Build and Deploy to Azure
+name: Build and Deploy School API
 
 on:
   push:
     branches:
-      - main
       - master
 
 env:
-  ACR_NAME: schoolacr2026
-  IMAGE_NAME: school-api
-  WEB_APP_NAME: school-api-prod
+  ACR_NAME: ${{ secrets.ACR_NAME }}
+  IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+  WEB_APP_NAME: ${{ secrets.WEB_APP_NAME }}
+  RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+
+    - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Login to Azure
-      uses: azure/login@v2
+      uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Login to ACR
-      run: az acr login --name $ACR_NAME
+      run: |
+        az acr login --name $ACR_NAME
 
     - name: Build Docker Image
       run: |
-        docker build \
-          -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
-          -f src/School.Api/Dockerfile \
-          .
-    
-    - name: Push Image
+        docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
+
+    - name: Push Docker Image
       run: |
         docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
 
-    - name: Update Web App Image
+    - name: Update Web App Container
       run: |
         az webapp config container set \
-          --resource-group school-rg \
           --name $WEB_APP_NAME \
-          --docker-custom-image-name $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
+          --resource-group $RESOURCE_GROUP \
+          --docker-custom-image-name $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} \
+          --docker-registry-server-url https://$ACR_NAME.azurecr.io
+
+    - name: Restart Web App
+      run: |
+        az webapp restart \
+          --name $WEB_APP_NAME \
+          --resource-group $RESOURCE_GROUP
