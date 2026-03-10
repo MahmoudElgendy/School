@@ -9,6 +9,7 @@ public class UnitTest1
     {
         true.Should().Be(true);
         true.Should().Be(true);
+        true.Should().Be(true);
 
     }
 }
