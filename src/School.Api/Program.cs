@@ -1,36 +1,27 @@
 using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using School.Api.Data;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 builder.Services.AddControllers();
+
 if (builder.Environment.IsProduction())
 {
-    var vaultUri = new Uri(builder.Configuration["Vault:Uri"]);
-    if (vaultUri != null)
-    {
-        builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
-    }
+    var vaultUri = builder.Configuration["KeyVaultConfig:VaultUri"];
 
+    if (!string.IsNullOrEmpty(vaultUri))
+    {
+        builder.Configuration.AddAzureKeyVault(new Uri(vaultUri), new DefaultAzureCredential());
+    }
 }
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
 var app = builder.Build();
-//test
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-}
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -44,4 +35,3 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
